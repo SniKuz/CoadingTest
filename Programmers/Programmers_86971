@@ -1,0 +1,79 @@
+//link : https://school.programmers.co.kr/learn/courses/30/lessons/86971
+
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+vector<vector<int>> table(101, vector<int>(101, 0));
+int answer = 0;
+int fairNode = 987654321;
+int wiresLength;
+
+void BF(vector<bool> visited, int start)
+{
+    int cnt = 0;
+    vector<int> que;
+    que.push_back(start);
+
+    while(!que.empty())
+    {
+        auto cur = que.back();
+        que.pop_back();
+        visited[cur] = true;
+        cnt++;
+
+        for(int i = 0; i < wiresLength; i++)
+        {
+            if(table[cur][i] == 1 && !visited[i])
+                que.push_back(i);
+        }
+    }
+    
+    if(abs(wiresLength/2-fairNode) >= abs(wiresLength/2-cnt))
+    {
+        fairNode = cnt;
+        answer = abs(wiresLength - (cnt*2));
+        
+    }
+}
+
+int solution(int n, vector<vector<int>> wires) {
+    wiresLength = n;
+    for(auto wire : wires)
+    {
+        table[wire[0]-1][wire[1]-1] = 1;
+        table[wire[1]-1][wire[0]-1] = 1;
+        
+    }
+    for(int i = 0; i < n; i++)
+    {
+        vector<bool> visited(101, false);
+        for(int j = 0; j < n; j++)
+        {
+            if(table[i][j] == 1)
+            {
+                table[i][j] = 0;
+                table[j][i] = 0;
+                BF(visited, i);
+                table[i][j] = 1;
+                table[j][i] = 1;
+            }
+        }
+    }
+    return answer;
+}
+
+/*
+송전탑 n <= 100 
+전선 wire = n-1개
+
+0. 테이블 부터 생성
+1. wire 앞에서부터 1개 없다고 치고 남은 부분에 dfs를 해서 양쪽 네트워크 개수 확인 (ElogV)
+2. 이걸 모든 wire에 대해서 진행. E^2logV
+
+양쪽 개수가 비슷하게 만드는게 목표임
+
+*안풀리고 있던 이유
+answer랑 잘랐을 떄 한 쪽 그래프 노드 개수(fairNode)는 다른건데 그냥 둘 다 answer로 하고 있었음
+*/
