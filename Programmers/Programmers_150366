@@ -1,0 +1,167 @@
+// https://school.programmers.co.kr/learn/courses/30/lessons/150366
+
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+vector<vector<string>> excel (51, vector<string>(51, ""));
+vector<string> answer;
+vector<int> merge(51*51);
+
+int Find(int u)
+{
+    if(merge[u] == u) return u;
+    merge[u] = Find(merge[u]);
+    return merge[u];
+}
+
+void Merge(int u, int v)
+{
+    int pU = Find(u);
+    int pV = Find(v);
+    if(pU == pV) return ;
+    merge[pV] = pU;
+}
+
+void SplitString(string str, vector<string> &v)
+{
+    int prev = 0;
+    int cur = str.find(" ");
+    while(cur != string::npos)
+    {
+        v.push_back(str.substr(prev, cur - prev));
+        prev = cur + 1;
+        cur = str.find(" ", prev);
+    }
+    v.push_back(str.substr(prev, cur - prev));
+}
+
+void RunCmd(vector<string> cmd)
+{
+    if(cmd[0] == "UPDATE")
+        {
+            if(cmd.size() > 3)
+            {
+                int r1 = stoi(cmd[1]), c1 = stoi(cmd[2]);
+                excel[r1][c1] = cmd[3];
+                
+                for(int r = 1; r < 51; r++)
+                {
+                    for(int c = 1; c < 51; c++)
+                    {
+                        if(merge[((r-1)*50 + c)] == merge[(r1-1)*50 + c1])
+                        {
+                            excel[r][c] = cmd[3];
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                for(int i = 1; i < 51; i++)
+                    for(int j = 1; j < 51; j++)
+                        if(excel[i][j] == cmd[1]) excel[i][j] = cmd[2];
+            }
+        }
+
+    if(cmd[0] == "MERGE")
+    {
+        if(cmd[1] == cmd[3] && cmd[2] == cmd[4]) return ;
+        else
+        {
+            int r1 = stoi(cmd[1]), c1 = stoi(cmd[2]), r2= stoi(cmd[3]), c2 = stoi(cmd[4]);
+            Merge((r1-1)*50 + c1, (r2-1)*50 + c2);
+            if(excel[r1][c1] == "")
+            {
+                excel[r1][c1] = excel[r2][c2];
+            } 
+            else
+            {
+                excel[r2][c2] = excel[r1][c1];
+            }
+        }
+    }
+
+    if(cmd[0] == "UNMERGE")
+    {
+        int r1 = stoi(cmd[1]), c1 = stoi(cmd[2]);
+        for(int r = 1; r < 51; r++)
+        {
+            for(int c = 1; c < 51; c++)
+            {
+                if(r == r1 && c == c1) continue;
+                if(merge[((r-1)*50 + c)] == merge[(r1-1)*50 + c1])
+                {
+                    excel[r][c] = "";
+                    merge[((r-1)*50+c)] = (r-1)*50 + c;
+                }
+            }
+        }
+        merge[(r1-1)*50 + c1] = (r1-1)*50 + c1;
+    }
+        
+    if(cmd[0] == "PRINT")
+    {
+        int r = stoi(cmd[1]), c = stoi(cmd[2]);
+        auto temp = excel[r][c];
+        if(temp == "") answer.push_back("EMPTY");
+        else answer.push_back(temp);
+    }
+}
+
+void PrintTable()
+{
+    for(auto line : excel)
+    {
+        for(auto block : line)
+        {
+            if(block == "") cout << ". ";
+            else cout << block << ' ';
+        }
+        cout << '\n';
+    }
+}
+
+void PrintTable10()
+{
+    for(int i = 0; i < 10; i++)
+    {
+        for(int j = 0; j < 10; j++)
+        {
+            if(excel[i][j] == "") cout << ". ";
+            else cout << excel[i][j] << ' ';
+        }
+        cout << '\n';
+    }
+}
+
+void PrintMerge(int n)
+{
+    for(int i = 0; i < n; i++) cout << merge[i] << ' ';
+}
+
+vector<string> solution(vector<string> commands) {
+    for(int i = 1; i < merge.size(); i++) merge[i] =i;
+    for(auto cmdLine : commands)
+    {
+        vector<string> cmd;
+        SplitString(cmdLine, cmd);
+        RunCmd(cmd);
+        PrintTable10();
+        cout << "=========\n";
+
+    }
+    PrintMerge(10);
+    return answer;
+}
+/*
+table = 50*50 고정
+(r, c)가 주어질 때 
+
+문제점 
+1. merge된 애들도 다 같이 바꿔 줘야함
+2. 그 merge된 애들 unmerge가 잘안됨
+*/
