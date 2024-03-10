@@ -6,11 +6,6 @@ using namespace std;
 
 vector<vector<int>> cache{100001, vector<int>{0,0}};
 
-void dp(int n, vector<int> tops, int cur)
-{
-    
-}
-
 int solution(int n, vector<int> tops) {
     if(tops[0] > 0)
     {
