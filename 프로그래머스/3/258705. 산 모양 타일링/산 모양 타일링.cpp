@@ -3,8 +3,8 @@
 
 using namespace std;
 
-int dp1[200000];
-int dp2[200000];
+int dp1[200001];
+int dp2[200001];
 
 int solution(int n, vector<int> tops) {
     if (tops[0] == 0){
