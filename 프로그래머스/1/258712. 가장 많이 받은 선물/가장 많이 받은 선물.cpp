@@ -16,7 +16,6 @@ vector<string> Split(string str)
 }
 
 int solution(vector<string> friends, vector<string> gifts) {
-    int answer = 0;
     map<string, int> nameIndex;
     map<string, int> presentIndex;
     int cnt = 0;
