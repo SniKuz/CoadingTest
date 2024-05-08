@@ -30,9 +30,7 @@ vector<string> solution(vector<vector<string>> plans) {
     sort(plans.begin(), plans.end(), 
          [](vector<string> a, vector<string> b) 
          { 
-             auto aTime = GetTime(a[1]); 
-             auto bTime = GetTime(b[1]);
-             return aTime < bTime;
+             return a[1] < b[1];
          });
     
     int startTime = GetTime(plans[0][1]);
