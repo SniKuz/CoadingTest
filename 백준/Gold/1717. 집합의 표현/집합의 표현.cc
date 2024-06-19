@@ -1,48 +1,50 @@
-#include<iostream>
-#include<vector>
+#include <bits/stdc++.h>
 
 using namespace std;
-int n, m;
-int parent[1000001];
 
-int getParent(int x) {
-    if (parent[x] == x) return x;
-    return parent[x] = getParent(parent[x]);
-}
-void unionParent(int a, int b) {
-    a = getParent(a);
-    b = getParent(b);
-    if (a > b) parent[a] = b;
-    else parent[b] = a;
-}
-void findParent(int a, int b) {
-    a = getParent(a);
-    b = getParent(b);
-    if (a == b) cout << "YES\n";
-    else cout << "NO\n";
+int N, M;
+vector<int> members(1000001);
+
+int FindUnion(int a)
+{
+    if(members[a] == a) return a;
+    return members[a] = FindUnion(members[a]);
 }
 
+void MakeUnion(int a, int b)
+{
+    a = FindUnion(a);
+    b = FindUnion(b);
+    if(a > b) members[a] = b;
+    else members[b] = a;
+}
 
-int main() {
-    ios::sync_with_stdio(false);
+int main()
+{
+    ios_base::sync_with_stdio(0);
     cin.tie(0);
-    cout.tie(0);
 
-    cin >> n >> m;
-    for (int i = 1; i <= n; i++) {
-        parent[i] = i;
-    }
-    for (int i = 0; i < m; i++) {
-        int o, a, b;
-        cin >> o >> a >> b;
-        if (!o) {
-            unionParent(a, b);
-        }
-        else { 
-            findParent(a, b);
-        }
-
+    cin >> N >> M;
+    for(int i = 1; i <= N; ++i)
+    {
+        members[i] = i;
     }
 
+    for(int i = 0; i < M; ++i)
+    {
+        int cmd, a, b;
+        cin >> cmd >> a >> b;
+        if(cmd == 0)
+        {
+            MakeUnion(a, b);
+        }
+        else // check same Union
+        {
+            if(FindUnion(a) == FindUnion(b))
+                cout << "yes" << '\n';
+            else
+                cout << "no" << '\n';
+        }
+    }
     return 0;
 }
