@@ -8,8 +8,6 @@ vector<set<int>> v(501);
 vector<int> times(501);
 vector<int> dp(501, -1);
 
-
-
 int solution(int idx)
 {
     if(dp[idx] < 0)
