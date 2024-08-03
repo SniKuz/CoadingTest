@@ -10,7 +10,6 @@ int dy[] = {1, 1, 0};
 
 int n;
 vector<vector<int>> board(16, vector<int>(16));
-vector<vector<bool>> visited(16, vector<bool>(16));
 pair<int, pair<int, int>> rootP = {0, {0, 1}};
 int res = 0;
 
@@ -74,7 +73,7 @@ int main()
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    
+
     cin >> n;
     for(int i = 0; i < n; i++)
     {
